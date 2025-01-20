@@ -24,59 +24,70 @@ int setup_buff(char *buff, char *user_str, int len){
  	int user_str_len = 0;
     int space_count = 0;
 	int buff_index = 0;
-	char *start = buff; //the original start of buff
+	int trailing_spaces = 0;
 
-    while(*user_str != '\0'){
-        user_str_len++;
-        user_str++;
-    }
+	if (is_whitespace(*user_str)){  //if first char of buff is a space
+		space_count = 1;
+	}
 
-    if (user_str_len > len){
-        return -1; //the user string is too large
-    }
-
-    user_str -= user_str_len;
-
-	user_str_len = 0; //reset to count whats actually being copied
     while (*user_str != '\0'){
+		if (buff_index >= len){
+			printf("buff_index >= len\n");
+			return -1; //user string is too large
+		}
+
         if (!(is_whitespace(*user_str)) && (space_count == 0)) {
 			*buff = *user_str;
 			user_str_len++;
+			buff_index++;
+			buff++;
         } else if (is_whitespace(*user_str) && (space_count == 0)) {
             *buff = ' ';
             space_count++;
             user_str_len++;
+            buff_index++;
+            buff++;
         } else if (!(is_whitespace(*user_str)) && (space_count == 1)) {
             *buff = *user_str;
             space_count = 0;
             user_str_len++;
+            buff_index++;
+            buff++;
+        } else if (is_whitespace(*user_str) && (space_count > 0)){
+			trailing_spaces++; //keep track of num of spaces
         } else {
         	user_str++;
             continue;
         }
 
-        buff++; //move buffer index over
         user_str++; //move str index over
-        buff_index++;
+
     }
 
-	while (buff_index < len){
-		*buff = '.';
-		buff++;
-		buff_index++;
+	if (trailing_spaces > 0){
+		buff_index-=(trailing_spaces+1);
+		
+		for (int i = buff_index; i < len; i++){
+			*(buff+i) = '.';
+		}
+	} else {
+		while (buff_index < len){
+			*buff = '.';
+			buff++;
+			buff_index++;
+		}
 	}
-
-
-	buff = start;
 
     return user_str_len; //return len of user string
 }
 
 void print_buff(char *buff, int len){
 	printf("Buffer:  ");
+	printf("[");
     for (int i=0; i<len; i++){
         putchar(*(buff+i));
     }
+    printf("]");
     putchar('\n');
 }
 
@@ -111,12 +122,6 @@ void reverse_string(char *buff, int user_str_len){
 		begin++;
 		end--;
 	}
-
-	for (int i = 0; i < user_str_len; i++){
-		printf("%c", *(buff+i));
-	}
-
-	printf("\n");
 }
 
 void word_print(char *buff, int user_str_len, int word_count){
@@ -135,11 +140,13 @@ void word_print(char *buff, int user_str_len, int word_count){
 			index++;
 		}
 		
-		printf(" (%d)\n", letter_count);
+		printf("(%d)\n", letter_count);
 		letter_count = 0;
 		index++;
 		buff++; //skip over space
 	}
+
+	printf("\nNumber of words returned: %d\n", word_count);
 
 }
 
@@ -224,10 +231,16 @@ int main(int argc, char *argv[]){
 	}
 
     user_str_len = setup_buff(buff, input_string, BUFFER_SZ);     //see todos
-    if (user_str_len < 0){
+	 
+	if (user_str_len == -1){
+		printf("error: user input is too large!\n");
+		exit(3);
+	} else if (user_str_len == -2){
+		printf("error: user input is empty!\n");
+	} else if (user_str_len < 0){
         printf("Error setting up buffer, error = %d", user_str_len);
         exit(2);
-    }
+    } 
 	
     switch (opt){
         case 'c':
@@ -240,22 +253,18 @@ int main(int argc, char *argv[]){
             break;
 		case 'r':
 			reverse_string(buff, user_str_len);
-			free(buff);
-			exit(0); //success
 			break;
         //TODO:  #5 Implement the other cases for 'r' and 'w' by extending
         //       the case statement options
         case 'w':
 			word_print(buff, user_str_len, count_words(buff, BUFFER_SZ, user_str_len));
-        	free(buff);
-        	exit(1);
         	break;
         case 'x':
-			if (argc == 3) { //if user provided exactly 3 arguments
+			if (argc == 5) { //if user provided exactly 3 arguments
 				printf("Not Implemented!\n");
 			}
 			free(buff);
-			exit(1);
+			exit(0);
         	break;
         default:
             usage(argv[0]);
