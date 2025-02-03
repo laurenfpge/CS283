@@ -385,7 +385,7 @@ void print_student(student_t *s)
 		return;
     }
 	
-	printf(STUDENT_PRINT_HDR_STRING, "ID", "FIRST NAME", "LAST_NAME", "GPA");
+	printf(STUDENT_PRINT_HDR_STRING, "ID", "FIRST_NAME", "LAST_NAME", "GPA");
 	printf(STUDENT_PRINT_FMT_STRING, s->id, s->fname, s->lname, s->gpa/100.0);
 }
 

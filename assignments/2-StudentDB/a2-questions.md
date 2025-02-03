@@ -5,7 +5,7 @@ Please answer the following questions and submit in your repo for the second ass
 
 1. In this assignment I asked you provide an implementation for the `get_student(...)` function because I think it improves the overall design of the database application.   After you implemented your solution do you agree that externalizing `get_student(...)` into it's own function is a good design strategy?  Briefly describe why or why not.
 
-    > **Answer**:  _start here_
+    > **Answer**: I think that have a separate get_student() function is good because it was needed for both add_student() and delete_student(). Making a separate function makes the code easier to understand and it can make debugging easier if you know that get_student() works. 
 
 2. Another interesting aspect of the `get_student(...)` function is how its function prototype requires the caller to provide the storage for the `student_t` structure:
 
@@ -39,7 +39,7 @@ Please answer the following questions and submit in your repo for the second ass
     ```
     Can you think of any reason why the above implementation would be a **very bad idea** using the C programming language?  Specifically, address why the above code introduces a subtle bug that could be hard to identify at runtime? 
 
-    > **ANSWER:** _start here_
+    > **ANSWER:** The problem with the code above is that it returns an address to the student. After we leave the function the memory it was using on the stack is cleared and we lose the variables in the function, which means that the student is deleted and the address points to the trash.
 
 3. Another way the `get_student(...)` function could be implemented is as follows:
 
@@ -72,7 +72,7 @@ Please answer the following questions and submit in your repo for the second ass
     ```
     In this implementation the storage for the student record is allocated on the heap using `malloc()` and passed back to the caller when the function returns. What do you think about this alternative implementation of `get_student(...)`?  Address in your answer why it work work, but also think about any potential problems it could cause.  
     
-    > **ANSWER:** _start here_  
+    > **ANSWER:** This version of get_student() works because the data is stored on the heap which is not erased after we return from the function call. One problem is that this function, if it succeeds, would require the memory to be freed elsewhere and if someone were to forget or it fails, there could be memory leaks.There could also be issues with how the data in pstudent is intialized.  
 
 
 4. Lets take a look at how storage is managed for our simple database. Recall that all student records are stored on disk using the layout of the `student_t` structure (which has a size of 64 bytes).  Lets start with a fresh database by deleting the `student.db` file using the command `rm ./student.db`.  Now that we have an empty database lets add a few students and see what is happening under the covers.  Consider the following sequence of commands:
@@ -102,11 +102,11 @@ Please answer the following questions and submit in your repo for the second ass
 
     - Please explain why the file size reported by the `ls` command was 128 bytes after adding student with ID=1, 256 after adding student with ID=3, and 4160 after adding the student with ID=64? 
 
-        > **ANSWER:** _start here_
+        > **ANSWER:** When adding students it seems like the number of bytes is increased by an extra 64 bytes because the file might have other internal data that is keeping the file in order. It could also be that a 64 byte-sized block might be too small for the file system to allocate. 
 
     -   Why did the total storage used on the disk remain unchanged when we added the student with ID=1, ID=3, and ID=63, but increased from 4K to 8K when we added the student with ID=64? 
 
-        > **ANSWER:** _start here_
+        > **ANSWER:** Since the physical storage allocation is typicaly in blocks of size 4KB, once we add student 64 we surpass that 4KB limit and move into another block of another 4KB, meaning the disk usage jumps to 8KB.
 
     - Now lets add one more student with a large student ID number  and see what happens:
 
@@ -119,4 +119,6 @@ Please answer the following questions and submit in your repo for the second ass
         ```
         We see from above adding a student with a very large student ID (ID=99999) increased the file size to 6400000 as shown by `ls` but the raw storage only increased to 12K as reported by `du`.  Can provide some insight into why this happened?
 
-        > **ANSWER:**  _start here_
+        > **ANSWER:**  Since the file system tracks the logical size of the file, even though we added a very large student, the space inbetween student 64 and student 99999 is empty so the file system does not allocate physical storage for all the empty space. 
+
+
