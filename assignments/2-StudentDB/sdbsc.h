@@ -50,7 +50,7 @@ void usage(char *);
 #define M_STD_NOT_FND_MSG "Student %d was not found in database.\n"
 #define M_DB_COMPRESSED_OK "Database successfully compressed!\n"
 #define M_DB_ZERO_OK      "All database records removed!\n"
-#define M_DB_EMPTY        "Database contains no student records.\n"
+#define M_DB_EMPTY        "Database contains no student records." //"Database contains no student records.\n"
 #define M_DB_RECORD_CNT   "Database contains %d student record(s).\n"
 #define M_NOT_IMPL        "The requested operation is not implemented yet!\n"
 
