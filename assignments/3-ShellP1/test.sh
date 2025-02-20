@@ -15,9 +15,9 @@ EOF
     # These echo commands will help with debugging and will only print
     #if the test fails
     echo "Captured stdout:" 
-	echo "Stripped Output: $stripped_output"
-	echo "Expected Output: $expected_output"
-#	echo "Output: $output"
+#	echo "Stripped Output: $stripped_output"
+#	echo "Expected Output: $expected_output"
+	echo "Output: $output"
     echo "Exit Status: $status"
 
     # Check exact match
@@ -43,9 +43,9 @@ EOF
     # These echo commands will help with debugging and will only print
     #if the test fails
     echo "Captured stdout:" 
-	echo "Stripped Output: $stripped_output"
-	echo "Expected Output: $expected_output"
-    #echo "Output: $output"
+	#echo "Stripped Output: $stripped_output"
+	#echo "Expected Output: $expected_output"
+    echo "Output: $output"
     echo "Exit Status: $status"
 
     # Check exact match
@@ -72,9 +72,9 @@ EOF
     # These echo commands will help with debugging and will only print
     #if the test fails
     echo "Captured stdout:" 
- 	echo "Stripped Output: $stripped_output"
-    echo "Expected Output: $expected_output"    
-    #echo "Output: $output"
+ 	#echo "Stripped Output: $stripped_output"
+    #echo "Expected Output: $expected_output"    
+    echo "Output: $output"
     echo "Exit Status: $status"
 
     # Check exact match
